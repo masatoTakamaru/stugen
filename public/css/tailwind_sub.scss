@@ -1,0 +1,187 @@
+/*
+  ### tailwind_sub.scss : tailwindcssのサブセット版 ###
+  flex関連             tailswindに準じる
+  マージン・パディング  tailswindに準じる
+  btn                 ボタン基本
+  btn-flat            フラットボタン
+  btn-canel           キャンセルボタン
+  btn-flat-cancel     フラットキャンセルボタン
+  select-mini         小さい選択フィールド
+  field               入力欄
+  font-bold           太字
+  text-center         文字列中央寄せ
+  underline           文字列下線
+  text-100            文字サイズ
+                      text-0 から text-500 まで 5 区切り
+                      text-100 は 1rem
+  opacity-100         透明度 0 から 100 まで 5 区切り
+  w-full              幅100%
+  ## tailwind_color.scss
+  カラーパレットはtailswindに準じる
+  https://tailwindcss.jp/docs/text-color
+  $red-500            scss内で変数として使える。
+  text-orange-500     文字色
+  bg-green-500        背景色
+*/
+
+@import "tailwind_color";
+
+body {
+  font-family: 'Helvetica Neue','Helvetica','Arial',YuGothic,'Yu Gothic','Hiragino Kaku Gothic ProN','ヒラギノ角ゴ ProN W3','メイリオ', Meiryo,'ＭＳ ゴシック',sans-serif;
+  margin: 0px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.w-full {width: 100%;}
+a {text-decoration:none;}
+div, p {margin-block-start: 0px;margin-block-end: 0px;}
+.container {
+  max-width: 1020px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+}
+/*通知*/
+.notice, .alert {
+  width: 100%;
+  background-color: rgba(254, 235, 200, 0.8);
+  border: solid 1px rgba(246, 173, 85, 0.7);
+}
+/*table*/
+.table-frame {
+  border: 2px solid map_get($color_set, gray-500);
+  border-radius: 12px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+}
+table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.dotted-bottom > th, .dotted-bottom > td {border-bottom: dotted 1px map_get($color_set, gray-500);}
+.solid-top > td {border-top: solid 1px black;}
+
+/*ボタン*/
+.btn {
+  color: white;
+  font-size: 1rem;
+  line-height: 1rem;
+  background-color: map_get($color_set, green-500);
+  position: relative;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  text-decoration: none;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+  border: solid 2px map_get($color_set, green-600);
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0 0 3px 2px map_get($color_set, green-500);
+  }
+}
+.btn-flat {
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.1rem 0.75rem;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 4px;
+}
+.btn-cancel {
+  color: map_get($color_set, green-500);
+  background-color: white;
+}
+.btn-flat-cancel {
+  color: map_get($color_set, green-500);
+  font-weight: 500;
+  font-size: 0.8rem;
+  background-color: white;
+  padding: 0.1rem 0.75rem;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+  border: solid 1px map_get($color_set, green-500);
+  border-radius: 4px;
+}
+/*badge*/
+.badge {
+  font-size: 0.8rem;
+  color: white;
+  background-color: map_get($color_set, green-500);
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+}
+/*入力フィールド*/
+input, select, textarea {
+  margin: 0.15rem;
+  padding: 0.5rem;
+  font-size: 1.15rem;
+  border-radius: 4px;
+  border: 1px solid map_get($color_set, green-500);
+  box-sizing: border-box;
+}
+.select-mini select {
+  padding: 0.15rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  border: 1px solid map_get($color_set, green-500);
+  box-sizing: border-box;
+}
+.field {line-height: 2rem;}
+/* flex関連 */
+.flex {display: flex;}
+.justify-start {justify-content: flex-start;}
+.justify-end {justify-content: flex-end;}
+.justify-center {justify-content: center;}
+.justify-between {justify-content: space-between;}
+.justify-evenly {justify-content: space-evenly;}
+.items-stretch {align-items: stretch;}
+.items-start {align-items: flex-start;}
+.items-center {align-items: center;}
+.items-end {align-items: flex-end;}
+.items-baseline {align-items: baseline;}
+/*テキスト関係*/
+.font-bold {font-weight: 700;}
+.text-left {text-align: left;}
+.text-center {text-align: center;}
+.text-right {text-align: right;}
+.text-justify {text-align: justify;}
+.underline {text-decoration: underline;}
+@for $i from 0 through 100 {
+  .text-#{$i*5} {font-size: #{$i*0.05}rem;}
+}
+/*見出し*/
+h1 {font-size: 1.15rem;}
+h2 {
+  font-size: 1.15rem;
+  padding-left: 0.5rem;
+  border-left: solid 4px map_get($color_set, green-500);
+}
+h3 {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  padding-left: 1rem;
+  border-left: double 6px map_get($color_set, green-300);
+}
+/* padding */
+@for $i from 0 through 100 {
+  .m-#{$i} {margin: 0.25rem * $i;}
+  .my-#{$i} {margin-top: 0.25rem * $i; margin-bottom: 0.25rem * $i;}
+  .mx-#{$i} {margin-left: 0.25rem * $i; margin-right: 0.25rem * $i;}
+  .mt-#{$i} {margin-top: 0.25rem * $i;}
+  .mr-#{$i} {margin-right: 0.25rem * $i;}
+  .mb-#{$i} {margin-bottom: 0.25rem * $i;}
+  .ml-#{$i} {margin-left: 0.25rem * $i;}
+  .p-#{$i} {padding: 0.25rem * $i;}
+  .py-#{$i} {padding-top: 0.25rem * $i; padding-bottom: 0.25rem * $i;}
+  .px-#{$i} {padding-left: 0.25rem * $i; padding-right: 0.25rem * $i;}
+  .pt-#{$i} {padding-top: 0.25rem * $i;}
+  .pr-#{$i} {padding-right: 0.25rem * $i;}
+  .pb-#{$i} {padding-bottom: 0.25rem * $i;}
+  .pl-#{$i} {padding-left: 0.25rem * $i;}
+}
+/*opacity*/
+@for $i from 0 through 20 {
+  .opacity-#{$i*5} {opacity: #{$i*5*0.01}}
+}
+.rounded {border-radius: 0.5rem;}

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Faker\Factory as Faker;
 
 class IndexController extends Controller
 {
@@ -18,8 +17,7 @@ class IndexController extends Controller
 	 public function __invoke(Request $request)
 	{
 
-		$faker = Faker::create('ja_JP');
-		return view("home.index")
-						->with('name', $faker->name);
+		return view("home.index");
+
 	}
 }

@@ -13,4 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', \App\Http\Controllers\Home\IndexController::class);
+Route::get('/', \App\Http\Controllers\Home\IndexController::class)
+->name('home.index');
+Route::post('/home/create', \App\Http\Controllers\Home\CreateController::class)
+->name('home.create');
