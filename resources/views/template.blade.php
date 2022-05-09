@@ -7,26 +7,36 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="{{asset('css/tailwind_sub.css')}}" rel="stylesheet">
   <title>学生ジェネレータ</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
-     crossorigin="anonymous"></script>
-  <!-- stugenGeneral -->
-  <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-1151265093391964"
-     data-ad-slot="1758144469"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-  <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</head>
+ </head>
 <body class="p-4">
 <header>
   <h1><a href="{{route('home.index')}}">学生ジェネレータ</a></h1>
 </header>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
+crossorigin="anonymous"></script>
+<!-- stugenGeneral -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-1151265093391964"
+data-ad-slot="1758144469"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+<script>
+ (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 <div class="wrapper">
   @yield("content")
 </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
+     crossorigin="anonymous"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="autorelaxed"
+     data-ad-client="ca-pub-1151265093391964"
+     data-ad-slot="8487204343"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 <footer class="flex justify-end mt-8">
   <p>mmsankosho 2022<p>
 </footer>
