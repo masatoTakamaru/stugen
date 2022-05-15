@@ -9,24 +9,28 @@
   <title>学生ジェネレータ</title>
  </head>
 <body class="p-4">
+
 <header>
   <h1><a href="{{route('home.index')}}">学生ジェネレータ</a></h1>
 </header>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
-crossorigin="anonymous"></script>
+
+<div class="container">
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
+  crossorigin="anonymous"></script>
 <!-- stugenGeneral -->
 <ins class="adsbygoogle"
-style="display:block"
-data-ad-client="ca-pub-1151265093391964"
-data-ad-slot="1758144469"
-data-ad-format="auto"
-data-full-width-responsive="true"></ins>
+  style="display:inline-block;width:728px;height:200px"
+  data-ad-client="ca-pub-1151265093391964"
+  data-ad-slot="1758144469"></ins>
 <script>
- (adsbygoogle = window.adsbygoogle || []).push({});
+  (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-<div class="wrapper">
+
+<div class="content">
   @yield("content")
 </div>
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
      crossorigin="anonymous"></script>
 <ins class="adsbygoogle"
@@ -37,6 +41,9 @@ data-full-width-responsive="true"></ins>
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
+</div>
+
 <footer class="flex justify-end mt-8">
   <p>mmsankosho 2022<p>
 </footer>
