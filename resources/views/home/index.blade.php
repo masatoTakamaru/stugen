@@ -3,6 +3,10 @@
 @section("content")
 
 <div>
+  <p>学生（生徒・児童）に特化した個人情報ジェネレータです。ある程度リアルな疑似個人情報を作成できます。データはcsv形式でダウンロードできます。</p>
+</div>
+
+<div>
 <form action="{{route('home.create')}}" method="post">
   <h3>都道府県</h3>
   <div class="flex flex-wrap mb-4 mx-8">
@@ -12,6 +16,17 @@
         <label for="{{$prefName}}" class="mr-4">{{$prefName}}</label>
       </div>
     @endforeach
+    <p class="text-blue-600 text-85">*未選択の場合は全国</p>
+  </div>
+  <h3>学年</h3>
+  <div class="flex flex-wrap mb-4 mx-8">
+    @foreach($gradeNames as $gradeName)
+      <div class="flex items-center">
+        <input type="checkbox" name="gradeNames[]" id="{{$gradeName}}" value="{{$gradeName}}">
+        <label for="{{$gradeName}}" class="mr-4">{{$gradeName}}</label>
+      </div>
+    @endforeach
+    <p class="text-blue-600 text-85">*未選択の場合は全学年</p>
   </div>
   <h3>人数</h3>
   <div class="flex items-center mb-8 mx-8">
@@ -31,13 +46,24 @@
 </div>
 
 <script>
+  //ページ読み込み時
+  window.addEventListener('DOMContentLoaded', function() {
+    button.style.visibility = "visible";
+    target.style.visibility = "hidden";
+  });
+  //ページ遷移時
+  window.addEventListener('unload', function() {
+    button.style.visibility = "visible";
+    target.style.visibility = "hidden";
+  });
+  //クリック時
   let button = document.querySelector("#submit");
   let target = document.querySelector("#loading")
-  target.style.visibility = "hidden";
-  button.addEventListener('click', function(){
+  button.addEventListener('click', function() {
     button.style.visibility = "hidden";
     target.style.visibility = "visible";
   });
+
 </script>
 
 @endsection

@@ -6,17 +6,17 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="{{asset('css/tailwind_sub.css')}}" rel="stylesheet">
-  <title>学生ジェネレータ</title>
+  <title>学生個人情報ジェネレータ</title>
  </head>
 <body class="p-4">
 
 <header>
-  <h1><a href="{{route('home.index')}}">学生ジェネレータ</a></h1>
+  <p class="text-center text-150 font-bold"><a href="{{route('home.index')}}">学生個人情報ジェネレータ</a></p>
 </header>
 
 <div class="container">
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1151265093391964"
   crossorigin="anonymous"></script>
 <!-- stugenGeneral -->
 <ins class="adsbygoogle"

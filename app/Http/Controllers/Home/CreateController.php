@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Home;
 
+use DateTime;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Home\CreateRequest;
@@ -21,73 +23,149 @@ class CreateController extends Controller
      */
     public function __invoke(CreateRequest $request)
     {
-        $numbers = $request->input('numbers');
+        date_default_timezone_set('Asia/Tokyo');
+
+        $numbers = $request->input('numbers'); //人数
         $prefs = Array();
-        $prefs = $request->input('prefs');
-        $faker = Faker::create('ja_JP');
+        $prefs = $request->input('prefs'); //都道府県名
+        $gradeNames = Array();
+        $gradeNames = $request->input('gradeNames'); //学年名
+        $piis = Array(); //個人情報をまとめた配列
+		for($i = 1; $i <= $numbers; $i++) {
+            $piis[$i]['name'] = $this->getName();
+            $piis[$i]['address'] = $this->getAddress($prefs);
+            $piis[$i]['phone1'] = $this->getPhone1($piis[$i]['address']);
+            $piis[$i]['phone2'] = $this->getPhone2();
+            $piis[$i]['gradeName'] = $this->getGradeName($gradeNames);
+            $piis[$i]['birthDate'] = $this->getBirthDate($piis[$i]['gradeName']);
+        }
+        //暫定出力
+        foreach($piis as $pii) {
+            //echo $pii['name']['familyName'] . ' ';
+            //echo $pii['name']['firstName'] . ' ';
+            echo $pii['address']['pref'];
+            echo $pii['address']['city'];
+            echo ' ';            
+            echo $pii['gradeName'] . ' ';
+            echo $pii['school'] . ' ';
+            echo '<br>';
+        }
+    }
+
+    private function getName() {
+        //姓，男性名，女性名はテーブルから全取得してランダム
+        //に抽出する。
         $lastNames = Array();
         $firstNames = Array();
-        $familyNames = FamilyNames::all();
-        $firstNameMales = FirstNameMales::all();        $firstNameFemales = FirstNameFemales::all();
-        $address = Array();
-        $piis = Array();
-		for($i = 1; $i <= $numbers; $i++) {
-            $n = mt_rand(1, count($familyNames) - 1);
-            //名字
-            $piis[$i]['familyName'] = $familyNames[$n]['family_name'];
-            $piis[$i]['familyNameKana'] = $familyNames[$n]['family_name_kana'];
-            //名
-            if(mt_rand(0,1) == 0) {
-                $n = mt_rand(0, count($firstNameMales) - 1);
-                $piis[$i]['firstName'] = $firstNameMales[$n]['first_name_male'];
-                $piis[$i]['firstNameKana'] = $firstNameMales[$n]['first_name_male_kana'];
-            } else {
-                $n = mt_rand(0, count($firstNameFemales) - 1);
-                $piis[$i]['firstName'] = $firstNameFemales[$n]['first_name_female'];
-                $piis[$i]['firstNameKana'] = $firstNameFemales[$n]['first_name_female_kana'];
-            }
-            //住所
-            if($prefs == null) {
-                $address = Address::inRandomOrder()->first();
-            } else {
-                $address = Address::where('pref', $prefs[mt_rand(0, count($prefs) - 1)])->inRandomOrder()->first();
-            }
-            $piis[$i]['zip'] = $address['zip'];
-            $piis[$i]['pref'] = $address['pref'];
-            $piis[$i]['city'] = $address['city'];
-            $piis[$i]['st'] = $address['st'];
-            if(mt_rand(0,3) == 0){
-                $piis[$i]['block'] = strval(mt_rand(10,2000));
-            } else {
-                $piis[$i]['block'] = strval(mt_rand(1,9)) . '-' . strval(mt_rand(1,19)) . '-' . strval(mt_rand(1,30));
-            }
-            if(mt_rand(0,2) == 0){
-                $piis[$i]['block'] = $piis[$i]['block'] . $faker->secondaryAddress();
-            }
-            //電話番号
-            $ac = "0" . strval($address['ac']);
-            switch(mb_strlen($ac)) {
-                case 2:
-                    $phone1 = $ac . "-" . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT) . "-" . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
-                    break;
-                case 3:
-                    $phone1 = $ac . "-" . str_pad(mt_rand(1,999), 3, '0', STR_PAD_LEFT) . "-" . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
-                    break;
-                case 4:
-                    $phone1 = $ac . "-" . str_pad(mt_rand(1,99), 2, '0', STR_PAD_LEFT) . "-" . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
-                    break;
-                case 5:
-                    $phone1 = $ac . "-" . str_pad(mt_rand(1,9), 1, '0', STR_PAD_LEFT) . "-" . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
-                    break;                                
-            }
-            $piis[$i]['phone1'] = $phone1;
-            //携帯電話番号
-            $phone2 = "0" . strval(mt_rand(7,9)) . "0-" . strval(mt_rand(1000,9999)) . "-" . strval(mt_rand(1000,9999));
-            $piis[$i]['phone2'] = $phone2;
+        $firstNameMales = FirstNameMales::all(); //男性名
+        $firstNameFemales = FirstNameFemales::all(); //女性名
+        $familyNames = FamilyNames::all(); //姓
+        $n = mt_rand(1, count($familyNames) - 1);
+        //姓
+        $e['familyName'] = $familyNames[$n]['family_name'];
+        $e['familyNameKana'] = $familyNames[$n]['family_name_kana'];
+        //名
+        if(mt_rand(0,1) == 0) {
+            $n = mt_rand(0, count($firstNameMales) - 1);
+            $e['firstName'] = $firstNameMales[$n]['first_name_male'];
+            $e['firstNameKana'] = $firstNameMales[$n]['first_name_male_kana'];
+        } else {
+            $n = mt_rand(0, count($firstNameFemales) - 1);
+            $e['firstName'] = $firstNameFemales[$n]['first_name_female'];
+            $e['firstNameKana'] = $firstNameFemales[$n]['first_name_female_kana'];
         }
-        return view("home.create")->with([
-            "numbers" => $numbers,
-            "piis" => $piis,
-        ]);
+        return $e;
     }
+
+    private function getAddress($prefs) {
+        //住所は選択された都道府県名をもとに，テーブルから
+        //その都道府県内の住所をランダムに1件抽出する。
+        if($prefs == null) {
+            $address = Address::inRandomOrder()->first();
+        } else {
+            $address = Address::where('pref', $prefs[mt_rand(0, count($prefs) - 1)])->inRandomOrder()->first();
+        }
+        $e['zip'] = $address['zip']; //郵便番号
+        $e['pref'] = $address['pref']; //都道府県
+        $e['city'] = $address['city']; //郡市町村
+        $e['st'] = $address['st']; //町名
+        $e['ac'] = $address['ac']; //市外局番
+        //1/4の確率で地番XXXX
+        //3/4の確率で地番X-XX-XXの形式とする
+        if(mt_rand(0,3) == 0){
+            $e['block'] = strval(mt_rand(10,2000));
+        } else {
+            $e['block'] = strval(mt_rand(1,9)) . '-' . strval(mt_rand(1,19)) . '-' . strval(mt_rand(1,30));
+        }
+        //1/3の確率で建物名を加える(fakerで生成)
+        $faker = Faker::create('ja_JP');
+        if(mt_rand(0,2) == 0) {
+            $e['block'] = $e['block'] . $faker->secondaryAddress();
+        }
+        return $e;
+    }
+
+    private function getPhone1($address) {
+        //電話番号
+        //市外局番のケタ数によって市内局番のケタ数を決定する
+
+        //市外局番の先頭に0を追加
+        $ac = '0' . strval($address['ac']);
+        switch(mb_strlen($ac)) {
+            case 2:
+                //XX-XXXX-XXXX
+                $str = $ac . '-' . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT) . '-' . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
+                break;
+            case 3:
+                //XXX-XXX-XXXXX
+                $str = $ac . '-' . str_pad(mt_rand(1,999), 3, '0', STR_PAD_LEFT) . '-' . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
+                break;
+            case 4:
+                //XXXX-XX-XXXX
+                $str = $ac . '-' . str_pad(mt_rand(1,99), 2, '0', STR_PAD_LEFT) . '-' . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
+                break;
+            case 5:
+                //XXXXX-X-XXXX
+                $str = $ac . '-' . str_pad(mt_rand(1,9), 1, '0', STR_PAD_LEFT) . '-' . str_pad(mt_rand(1,9999), 4, '0', STR_PAD_LEFT);
+                break;                                
+        }
+        return $str;
+    }
+
+    private function getPhone2() {
+        //携帯電話番号
+        //070-XXXX-XXXX 080-XXXX-XXXX 090-XXXX-XXXX
+        //のいずれか
+        return '0' . strval(mt_rand(7,9)) . '0-' . strval(mt_rand(1000,9999)) . '-' . strval(mt_rand(1000,9999));
+    }
+
+    private function getGradeName($gradeNames) {
+        //学年未選択の場合は全学年
+        if($gradeNames == null) {
+            $gradeNames = $this->gradeNames;
+        }
+        return $gradeNames[mt_rand(0, count($gradeNames) - 1)];
+    }
+
+    private function getBirthDate($gradeName) {
+        //生年月日
+        //選択された学年の要素番号を取得
+        $n = array_search($gradeName, $this->gradeNames);
+        //いったん年度初めの日付を取得する
+        //$date = new Carbon('today');
+        $date = new Carbon('2022-05-01');
+        if ($date->month <= 3) {
+            $date->subYear();
+        }
+        if ($n == 0) {
+            $e = new Carbon(strval($date->year - mt_rand(0, 3)) . '-04-02');
+        } else {
+            $e = new Carbon(strval($date->year - $n - 3) . '-04-02');
+        }
+        //年度初めから日付をランダムに加算して生年月日とする
+        $birthDate = $e->addDay(mt_rand(0,364));
+        return $birthDate;
+        
+    }
+
 }
