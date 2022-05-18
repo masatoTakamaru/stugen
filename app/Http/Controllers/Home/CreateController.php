@@ -12,6 +12,11 @@ use App\Models\FamilyNames;
 use App\Models\FirstNameMales;
 use App\Models\FirstNameFemales;
 use App\Models\Address;
+use App\Models\Nursery;
+use App\Models\Elem;
+use App\Models\Middle;
+use App\Models\High;
+use App\Models\Univ;
 
 class CreateController extends Controller
 {
@@ -38,6 +43,7 @@ class CreateController extends Controller
             $piis[$i]['phone2'] = $this->getPhone2();
             $piis[$i]['gradeName'] = $this->getGradeName($gradeNames);
             $piis[$i]['birthDate'] = $this->getBirthDate($piis[$i]['gradeName']);
+            $piis[$i]['schoolName'] = $this->getSchoolName($piis[$i]['address'], $piis[$i]['gradeName']);
         }
         //暫定出力
         foreach($piis as $pii) {
@@ -47,7 +53,7 @@ class CreateController extends Controller
             echo $pii['address']['city'];
             echo ' ';            
             echo $pii['gradeName'] . ' ';
-            echo $pii['school'] . ' ';
+            echo $pii['schoolName'] . ' ';
             echo '<br>';
         }
     }
@@ -168,4 +174,46 @@ class CreateController extends Controller
         
     }
 
+    private function getSchoolName($address, $gradeName) {
+        //選択された学年の要素番号を取得
+        $n = array_search($gradeName, $this->gradeNames);
+        switch($n) {
+            case 0:
+                $e = '';
+                break;
+            case $n >= 1 && $n <= 3:
+                $e = Nursery::wherePref($address['pref'])
+                    ->where('city', 'LIKE', "%{$address['city']}%")
+                    ->inRandomOrder()
+                    ->first();
+                break;
+            case $n >= 4 && $n <= 9:
+                $e = Elem::wherePref($address['pref'])
+                    ->where('city', 'LIKE', "%{$address['city']}%")
+                    ->inRandomOrder()
+                    ->first();
+                break;
+            case $n >= 10 && $n <= 12:
+                $e = Middle::wherePref($address['pref'])
+                    ->where('city', 'LIKE', "%{$address['city']}%")
+                    ->inRandomOrder()
+                    ->first();
+                break;
+            case $n >= 13 && $n <= 15:
+                $e = High::wherePref($address['pref'])
+                    ->inRandomOrder()
+                    ->first();
+                break;
+            case $n >= 16 && $n <= 19:
+                $e = Univ::wherePref($address['pref'])
+                    ->inRandomOrder()
+                    ->first();
+                break;
+        }
+        if($e == null) {
+            return "";
+        } else {
+            return $e['name'];
+        }
+    }
 }
