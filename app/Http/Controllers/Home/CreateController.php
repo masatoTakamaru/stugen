@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Home\CreateRequest;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Faker\Factory as Faker;
 use App\Models\FamilyNames;
 use App\Models\FirstNameMales;
@@ -44,21 +45,64 @@ class CreateController extends Controller
             $piis[$i]['gradeName'] = $this->getGradeName($gradeNames);
             $piis[$i]['birthDate'] = $this->getBirthDate($piis[$i]['gradeName']);
             $piis[$i]['schoolName'] = $this->getSchoolName($piis[$i]['address'], $piis[$i]['gradeName']);
+            $piis[$i]['username'] = $this->getUserName();
+            $piis[$i]['password'] = $this->getPassword();
+            $piis[$i]['email'] = $this->getEmail();
         }
-        //暫定出力
-        foreach($piis as $pii) {
-            //echo $pii['name']['familyName'] . ' ';
-            //echo $pii['name']['firstName'] . ' ';
-            echo $pii['address']['pref'];
-            echo $pii['address']['city'];
-            echo ' ';            
-            echo $pii['gradeName'] . ' ';
-            echo $pii['schoolName'] . ' ';
-            echo '<br>';
-        }
+        return $this->download($piis);
     }
 
-    private function getName() {
+    private function download($data)
+    {
+        $response = new StreamedResponse(function () use ($data) {
+            $stream = fopen('php://output', 'w');
+            $head = [
+                '姓', '名', '姓フリガナ', '名フリガナ',
+                '学年','生年月日','学校名',
+                '郵便番号', '都道府県', '市区町村', 'その他', '番地等',
+                '電話番号', '携帯電話番号',
+                'ユーザー名','パスワード','メールアドレス',
+            ];
+            mb_convert_variables('SJIS-win', 'UTF-8', $head);
+            fputcsv($stream, $head);
+            if($data)
+            {
+                foreach($data as $row) {
+                    mb_convert_variables('SJIS-win', 'UTF-8', $row);
+                    fputcsv($stream, [
+                        $row['name']['familyName'],
+                        $row['name']['firstName'],
+                        $row['name']['familyNameKana'],
+                        $row['name']['firstNameKana'],
+                        $row['gradeName'],
+                        $row['birthDate']->format('Y-m-d'),
+                        $row['schoolName'],
+                        $row['address']['zip'],
+                        $row['address']['pref'],
+                        $row['address']['city'],
+                        $row['address']['st'],
+                        $row['address']['block'],
+                        $row['phone1'],
+                        $row['phone2'],
+                        $row['username'],
+                        $row['password'],
+                        $row['email'],
+                    ]);
+                }
+            }
+            fclose($stream);
+        },
+        \Illuminate\Http\Response::HTTP_OK,
+        [
+            'Content-Type'=>'text/csv',
+            'Content-Disposition'=>'attachment; filename=student_list.csv',
+        ]
+        );
+        return $response;
+    }
+
+    private function getName()
+    {
         //姓，男性名，女性名はテーブルから全取得してランダム
         //に抽出する。
         $lastNames = Array();
@@ -83,7 +127,8 @@ class CreateController extends Controller
         return $e;
     }
 
-    private function getAddress($prefs) {
+    private function getAddress($prefs)
+    {
         //住所は選択された都道府県名をもとに，テーブルから
         //その都道府県内の住所をランダムに1件抽出する。
         if($prefs == null) {
@@ -111,7 +156,8 @@ class CreateController extends Controller
         return $e;
     }
 
-    private function getPhone1($address) {
+    private function getPhone1($address)
+    {
         //電話番号
         //市外局番のケタ数によって市内局番のケタ数を決定する
 
@@ -138,14 +184,16 @@ class CreateController extends Controller
         return $str;
     }
 
-    private function getPhone2() {
+    private function getPhone2()
+    {
         //携帯電話番号
         //070-XXXX-XXXX 080-XXXX-XXXX 090-XXXX-XXXX
         //のいずれか
         return '0' . strval(mt_rand(7,9)) . '0-' . strval(mt_rand(1000,9999)) . '-' . strval(mt_rand(1000,9999));
     }
 
-    private function getGradeName($gradeNames) {
+    private function getGradeName($gradeNames)
+    {
         //学年未選択の場合は全学年
         if($gradeNames == null) {
             $gradeNames = $this->gradeNames;
@@ -153,7 +201,8 @@ class CreateController extends Controller
         return $gradeNames[mt_rand(0, count($gradeNames) - 1)];
     }
 
-    private function getBirthDate($gradeName) {
+    private function getBirthDate($gradeName)
+    {
         //生年月日
         //選択された学年の要素番号を取得
         $n = array_search($gradeName, $this->gradeNames);
@@ -174,7 +223,8 @@ class CreateController extends Controller
         
     }
 
-    private function getSchoolName($address, $gradeName) {
+    private function getSchoolName($address, $gradeName)
+    {
         //選択された学年の要素番号を取得
         $n = array_search($gradeName, $this->gradeNames);
         switch($n) {
@@ -215,5 +265,36 @@ class CreateController extends Controller
         } else {
             return $e['name'];
         }
+    }
+
+    private function getUserName()
+    {
+        $faker = Faker::create('en_US');
+        $e = $faker->userName();
+        return $e;
+    }
+
+    private function getEmail()
+    {
+        $faker = Faker::create('ja_JP');
+        $str = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $e = "";
+        $r = mt_rand(7, 12);
+        for($i = 0; $i <= $r; $i++) {
+            $e = $e . substr($str,mt_rand(0, strlen($str) - 1), 1);
+        }
+        $e = $e . '@' . $faker->safeEmailDomain();
+        return $e;        
+    }
+
+    private function getPassword()
+    {
+        $str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $e = "";
+        $r = mt_rand(8, 10);
+        for($i = 0; $i <= $r; $i++) {
+            $e = $e . substr($str,mt_rand(0, strlen($str) - 1), 1);
+        }
+        return $e;        
     }
 }
