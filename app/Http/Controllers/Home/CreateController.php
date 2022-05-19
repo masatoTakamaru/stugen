@@ -95,7 +95,7 @@ class CreateController extends Controller
         \Illuminate\Http\Response::HTTP_OK,
         [
             'Content-Type'=>'text/csv',
-            'Content-Disposition'=>'attachment; filename=student_list.csv',
+            'Content-Disposition'=>'attachment; filename=students_list.csv',
         ]
         );
         return $response;
