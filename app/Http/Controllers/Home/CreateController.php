@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Home;
 
 use DateTime;
 use Carbon\Carbon;
+use Cookie;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Home\CreateRequest;
@@ -31,12 +32,13 @@ class CreateController extends Controller
     {
         date_default_timezone_set('Asia/Tokyo');
 
+        $prefs = Array();           //都道府県名
+        $gradeNames = Array();      //学年名
+        $piis = Array();            //個人情報をまとめた配列
+
         $numbers = $request->input('numbers'); //人数
-        $prefs = Array();
-        $prefs = $request->input('prefs'); //都道府県名
-        $gradeNames = Array();
-        $gradeNames = $request->input('gradeNames'); //学年名
-        $piis = Array(); //個人情報をまとめた配列
+        $prefs = $request->input('prefs');
+        $gradeNames = $request->input('gradeNames');
 		for($i = 1; $i <= $numbers; $i++) {
             $piis[$i]['name'] = $this->getName();
             $piis[$i]['address'] = $this->getAddress($prefs);
@@ -49,7 +51,7 @@ class CreateController extends Controller
             $piis[$i]['password'] = $this->getPassword();
             $piis[$i]['email'] = $this->getEmail();
         }
-        return $this->download($piis);
+        return $this->download($piis);  //csvのダウンロード
     }
 
     private function download($data)
