@@ -46,55 +46,17 @@
     <input type="number" min="1" max="1000" name="numbers"><p class="ml-4">1～1000</p>
     {{csrf_field()}}
   </div>
+  @error('numbers')
+  <div>
+    <p>{{$message}}</p>
+  </div>
+  @enderror
   <div class="flex justify-center mb-2">
     <p>人数が多い場合，処理に数分かかることがあります。</p>
   </div>
   <div class="flex justify-center">
     <button id="submit" type="submit" class="btn py-3 px-12">作成</button>
   </div>
-  <div id="loading" class="flex justify-center">
-    <div>
-      <img class="mb-4" src="{{asset('images/loading.gif')}}">
-      <p>処理中...</p>
-    </div>
-  </div>
 </div>
-
-<script>
-  let submit = document.querySelector("#submit");
-  let loading = document.querySelector("#loading");
-  //ページ読み込み時
-  window.addEventListener('DOMContentLoaded', function() {
-    submit.style.visibility = "visible";
-    loading.style.visibility = "hidden";
-  });
-  //ページ遷移時
-  /*
-  window.addEventListener('unload', function() {
-    submit.style.visibility = "visible";
-    loading.style.visibility = "hidden";
-  });
-  */
-  //クリック時
-  /*
-  submit.addEventListener('click', function() {
-    submit.style.visibility = "hidden";
-    loading.style.visibility = "visible";
-    const ObserveCookie = window.setInterval(() => {
-      console.log(document.cookie);
-      if(document.cookie == 'downloaded=true') {
-        console.log("downloadedがOK");
-        submit.style.visibility = "visible";
-        loading.style.visibility = "hidden";
-        let date = new Date();
-        date.setTime(0);
-        document.cookie = "downloaded=true;expires=" + date.toGMTString();
-      } else {
-        console.log("Cookieなし");
-      }
-    }, 1000);
-  });
-  */
-</script>
 
 @endsection

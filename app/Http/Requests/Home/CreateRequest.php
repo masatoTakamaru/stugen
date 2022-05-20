@@ -18,11 +18,4 @@ class CreateRequest extends FormRequest
             'numbers' => 'required|min:1',
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'numbers.required' => '人数を入力して下さい。',
-        ];
-    }
 }
