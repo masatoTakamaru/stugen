@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Home;
 
 use DateTime;
 use Carbon\Carbon;
-use Cookie;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Home\CreateRequest;
@@ -39,7 +38,8 @@ class CreateController extends Controller
         $numbers = $request->input('numbers'); //人数
         $prefs = $request->input('prefs');
         $gradeNames = $request->input('gradeNames');
-		for($i = 1; $i <= $numbers; $i++) {
+
+        for($i = 1; $i <= $numbers; $i++) {
             $piis[$i]['name'] = $this->getName();
             $piis[$i]['address'] = $this->getAddress($prefs);
             $piis[$i]['phone1'] = $this->getPhone1($piis[$i]['address']);
