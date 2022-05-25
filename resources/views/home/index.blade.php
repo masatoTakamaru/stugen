@@ -43,7 +43,7 @@
   </div>
   <h3>人数</h3>
   <div class="flex items-center mb-8 mx-8">
-    <input type="number" min="1" max="50" name="numbers"><p class="ml-4">1～50</p>
+    <input type="number" min="1" max="200" name="numbers"><p class="ml-4">最大200人</p>
     {{csrf_field()}}
   </div>
   @error('numbers')
