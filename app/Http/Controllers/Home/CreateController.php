@@ -27,6 +27,7 @@ class CreateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function __invoke(CreateRequest $request)
     {
         date_default_timezone_set('Asia/Tokyo');
@@ -109,22 +110,22 @@ class CreateController extends Controller
         //に抽出する。
         $lastNames = Array();
         $firstNames = Array();
-        $firstNameMales = FirstNameMales::all(); //男性名
-        $firstNameFemales = FirstNameFemales::all(); //女性名
-        $familyNames = FamilyNames::all(); //姓
-        $n = mt_rand(1, count($familyNames) - 1);
+        $n = FamilyNames::count();
+        $familyName = FamilyNames::find(mt_rand(1, $n)); //姓
         //姓
-        $e['familyName'] = $familyNames[$n]['family_name'];
-        $e['familyNameKana'] = $familyNames[$n]['family_name_kana'];
+        $e['familyName'] = $familyName['family_name'];
+        $e['familyNameKana'] = $familyName['family_name_kana'];
         //名
         if(mt_rand(0,1) == 0) {
-            $n = mt_rand(0, count($firstNameMales) - 1);
-            $e['firstName'] = $firstNameMales[$n]['first_name_male'];
-            $e['firstNameKana'] = $firstNameMales[$n]['first_name_male_kana'];
+            $n = FirstNameMales::count();
+            $firstNameMale = FirstNameMales::find(mt_rand(1, $n)); //男性名
+            $e['firstName'] = $firstNameMale['first_name_male'];
+            $e['firstNameKana'] = $firstNameMale['first_name_male_kana'];
         } else {
-            $n = mt_rand(0, count($firstNameFemales) - 1);
-            $e['firstName'] = $firstNameFemales[$n]['first_name_female'];
-            $e['firstNameKana'] = $firstNameFemales[$n]['first_name_female_kana'];
+            $n = FirstNameFemales::count();
+            $firstNameFemale = FirstNameFemales::find(mt_rand(1, $n)); //女性名
+            $e['firstName'] = $firstNameFemale['first_name_female'];
+            $e['firstNameKana'] = $firstNameFemale['first_name_female_kana'];
         }
         return $e;
     }
@@ -134,9 +135,15 @@ class CreateController extends Controller
         //住所は選択された都道府県名をもとに，テーブルから
         //その都道府県内の住所をランダムに1件抽出する。
         if($prefs == null) {
-            $address = Address::inRandomOrder()->first();
+            $n = Address::count();
+            $address = Address::find(mt_rand(1,$n));
         } else {
-            $address = Address::where('pref', $prefs[mt_rand(0, count($prefs) - 1)])->inRandomOrder()->first();
+            $pref = $prefs[mt_rand(0, count($prefs) - 1)];
+            $first = Address::where('pref', $pref)->first();
+            $last = Address::where('pref', $pref)
+                    ->orderBy('id', 'desc')
+                    ->first();
+            $address = Address::find(mt_rand($first['id'], $last['id']));
         }
         $e['zip'] = $address['zip']; //郵便番号
         $e['pref'] = $address['pref']; //都道府県
@@ -234,32 +241,59 @@ class CreateController extends Controller
                 $e = '';
                 break;
             case $n >= 1 && $n <= 3:
-                $e = Nursery::wherePref($address['pref'])
-                    ->where('city', 'LIKE', "%{$address['city']}%")
-                    ->inRandomOrder()
-                    ->first();
+                $first = Nursery::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->first();
+                $last = Nursery::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->orderBy('id', 'desc')
+                        ->first();
+                if($first && $last) {
+                    $e = Nursery::find(mt_rand($first['id'], $last['id']));
+                }
                 break;
             case $n >= 4 && $n <= 9:
-                $e = Elem::wherePref($address['pref'])
-                    ->where('city', 'LIKE', "%{$address['city']}%")
-                    ->inRandomOrder()
-                    ->first();
+                $first = Elem::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->first();
+                $last = Elem::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->orderBy('id', 'desc')
+                        ->first();
+                if($first && $last) {
+                    $e = Elem::find(mt_rand($first['id'], $last['id']));
+                }
                 break;
             case $n >= 10 && $n <= 12:
-                $e = Middle::wherePref($address['pref'])
-                    ->where('city', 'LIKE', "%{$address['city']}%")
-                    ->inRandomOrder()
-                    ->first();
+                $first = Middle::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->first();
+                $last = Middle::wherePref($address['pref'])
+                        ->where('city', 'LIKE', "%{$address['city']}%")
+                        ->orderBy('id', 'desc')
+                        ->first();
+                if($first && $last) {
+                    $e = Middle::find(mt_rand($first['id'], $last['id']));
+                }
                 break;
             case $n >= 13 && $n <= 15:
-                $e = High::wherePref($address['pref'])
-                    ->inRandomOrder()
-                    ->first();
+                $first = High::wherePref($address['pref'])
+                        ->first();
+                $last = High::wherePref($address['pref'])
+                        ->orderBy('id', 'desc')
+                        ->first();
+                if($first && $last) {
+                    $e = High::find(mt_rand($first['id'], $last['id']));
+                }
                 break;
             case $n >= 16 && $n <= 19:
-                $e = Univ::wherePref($address['pref'])
-                    ->inRandomOrder()
-                    ->first();
+                $first = Univ::wherePref($address['pref'])->first();
+                $last = Univ::wherePref($address['pref'])
+                        ->orderBy('id', 'desc')
+                        ->first();
+                if($first && $last) {
+                    $e = Univ::find(mt_rand($first['id'], $last['id']));
+                }
                 break;
         }
         if($e == null) {
