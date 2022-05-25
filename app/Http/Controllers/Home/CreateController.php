@@ -250,6 +250,8 @@ class CreateController extends Controller
                         ->first();
                 if($first && $last) {
                     $e = Nursery::find(mt_rand($first['id'], $last['id']));
+                } else {
+                    $e = null;
                 }
                 break;
             case $n >= 4 && $n <= 9:
@@ -262,6 +264,8 @@ class CreateController extends Controller
                         ->first();
                 if($first && $last) {
                     $e = Elem::find(mt_rand($first['id'], $last['id']));
+                } else {
+                    $e = null;
                 }
                 break;
             case $n >= 10 && $n <= 12:
@@ -274,6 +278,8 @@ class CreateController extends Controller
                         ->first();
                 if($first && $last) {
                     $e = Middle::find(mt_rand($first['id'], $last['id']));
+                } else {
+                    $e = null;
                 }
                 break;
             case $n >= 13 && $n <= 15:
@@ -284,6 +290,8 @@ class CreateController extends Controller
                         ->first();
                 if($first && $last) {
                     $e = High::find(mt_rand($first['id'], $last['id']));
+                } else {
+                    $e = null;
                 }
                 break;
             case $n >= 16 && $n <= 19:
@@ -293,6 +301,8 @@ class CreateController extends Controller
                         ->first();
                 if($first && $last) {
                     $e = Univ::find(mt_rand($first['id'], $last['id']));
+                } else {
+                    $e = null;
                 }
                 break;
         }
