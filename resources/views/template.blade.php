@@ -6,7 +6,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="{{asset('css/tailwind_sub.css')}}" rel="stylesheet">
-  <title>学生個人情報ジェネレータ</title>
+  <title>学生（生徒・児童）個人情報ジェネレータ</title>
  </head>
 <body class="p-4">
 
