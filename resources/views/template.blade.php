@@ -11,7 +11,7 @@
 <body class="p-4">
 
 <header>
-  <p class="text-center text-150 font-bold"><a href="{{route('home.index')}}">学生個人情報ジェネレータ</a></p>
+  <p class="text-center text-150 font-bold"><a href="{{route('home.index')}}">学生（生徒・児童）個人情報ジェネレータ</a></p>
 </header>
 
 <div class="container">
